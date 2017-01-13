@@ -11,22 +11,32 @@ const url = require('url');
 // Globals
 // -------------
 
-const APP_NAME = 'receiver';
+const APP_NAME = 'ldvp-alexa';
 
 const INTENT_RECEIVER_TURN_OFF = 'LDVPReceiverTurnOffIntent';
+const INTENT_RECEIVER_TURN_ON = 'LDVPReceiverTurnOnIntent';
+const INTENT_RECEIVER_SET_VOLUME_TO = 'LDVPReceiverSetVolumeToIntent';
 
 const UTTERANCES = {
-	INTENT_RECEIVER_TURN_OFF: ['ausschalten']
+	[INTENT_RECEIVER_TURN_OFF]: [],
+	[INTENT_RECEIVER_TURN_ON]: [],
+	[INTENT_RECEIVER_SET_VOLUME_TO]: ['setze lautstärke auf {-|VOLUME_LEVEL}']
 };
 
 
 const SLOTS = {
-	INTENT_RECEIVER_TURN_OFF: []
+	[INTENT_RECEIVER_TURN_OFF]: [],
+	[INTENT_RECEIVER_TURN_ON]: [],
+	[INTENT_RECEIVER_SET_VOLUME_TO]: {
+			'VOLUME_LEVEL': 'AMAZON.NUMBER'
+	}
 };
 
-function _getSlots(intent) { return SLOTS[intent] || []; }
+function _getSlots(intent) { return SLOTS[intent] || {}; }
 function _getUtterance(intent) { return UTTERANCES[intent] || []; }
 function _getIntentOpts(intent) { return { 'slots': _getSlots(intent), 'utterances': _getUtterance(intent) }; }
+
+console.log(_getIntentOpts(INTENT_RECEIVER_SET_VOLUME_TO));
 
 // -------------
 // Init
@@ -72,6 +82,36 @@ app.sessionEnded(function(req, res) {
 
 app.intent(INTENT_RECEIVER_TURN_OFF, _getIntentOpts(INTENT_RECEIVER_TURN_OFF), function (request, response) {
 	_sendRequest('GET', '/receiver/poweroff', {}, _expect([200], function (err, _, body) {
+		if (err) {
+			console.error(err);
+			response.say("fehler").send();
+			return;
+		}
+		console.log(body);
+		response.say("fertig").send();
+	}));
+	return false;
+});
+
+// Intent: LDVPReceiverTurnOnIntent
+
+app.intent(INTENT_RECEIVER_TURN_ON, _getIntentOpts(INTENT_RECEIVER_TURN_ON), function (request, response) {
+	_sendRequest('GET', '/receiver/poweron', {}, _expect([200], function (err, _, body) {
+		if (err) {
+			console.error(err);
+			response.say("fehler").send();
+			return;
+		}
+		console.log(body);
+		response.say("fertig").send();
+	}));
+	return false;
+});
+
+// Intent: LDVPReceiverSetVolumeToIntent
+
+app.intent(INTENT_RECEIVER_SET_VOLUME_TO, _getIntentOpts(INTENT_RECEIVER_SET_VOLUME_TO), function (request, response) {
+	_sendRequest('GET', '/receiver/setVolumeTo/' + request.slot('VOLUME_LEVEL'), {}, _expect([200], function (err, _, body) {
 		if (err) {
 			console.error(err);
 			response.say("fehler").send();
