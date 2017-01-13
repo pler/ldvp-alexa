@@ -5,7 +5,8 @@ if [ ! -d "node_modules" ]; then
   npm install
 fi
 
-zip --quiet --recurse-paths $TARGET_BUILD_FILE .
+mkdir -p build
+zip --quiet --recurse-paths --exclude=*build* build/$TARGET_BUILD_FILE .
 echo "Build: $TARGET_BUILD_FILE"
 
 
