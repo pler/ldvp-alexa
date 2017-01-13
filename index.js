@@ -16,6 +16,7 @@ const APP_NAME = 'ldvp-alexa';
 const INTENT_RECEIVER_TURN_OFF = 'LDVPReceiverTurnOffIntent';
 const INTENT_RECEIVER_TURN_ON = 'LDVPReceiverTurnOnIntent';
 const INTENT_RECEIVER_SET_VOLUME_TO = 'LDVPReceiverSetVolumeToIntent';
+const INTENT_RECEIVER_SET_INPUT_TO = 'LDVPReceiverSetInputIntent';
 
 const UTTERANCES = {
 	[INTENT_RECEIVER_TURN_OFF]: [
@@ -29,6 +30,10 @@ const UTTERANCES = {
 	[INTENT_RECEIVER_SET_VOLUME_TO]: [
 		'{setze|stelle} lautstärke {auf|zu} {-|VOLUME_LEVEL}',
 		'lautstärke {-|VOLUME_LEVEL}'
+	],
+	[INTENT_RECEIVER_SET_INPUT_TO]: [
+		'{setze|stelle} {eingang|input} {auf|zu} {-|INPUTS}',
+		'{eingang|input} {-|INPUTS}'
 	]
 };
 
@@ -36,7 +41,10 @@ const SLOTS = {
 	[INTENT_RECEIVER_TURN_OFF]: [],
 	[INTENT_RECEIVER_TURN_ON]: [],
 	[INTENT_RECEIVER_SET_VOLUME_TO]: {
-			'VOLUME_LEVEL': 'AMAZON.NUMBER'
+		'VOLUME_LEVEL': 'AMAZON.NUMBER'
+	},
+	[INTENT_RECEIVER_SET_INPUT_TO]: {
+		'INPUTS': 'INPUT'
 	}
 };
 
@@ -117,6 +125,21 @@ app.intent(INTENT_RECEIVER_TURN_ON, _getIntentOpts(INTENT_RECEIVER_TURN_ON), fun
 app.intent(INTENT_RECEIVER_SET_VOLUME_TO, _getIntentOpts(INTENT_RECEIVER_SET_VOLUME_TO), function (request, response) {
 	const volumeLevel = request.slot('VOLUME_LEVEL');
 	_sendRequest('GET', '/receiver/setVolumeTo/' + volumeLevel, {}, function (err, res, body) {
+		if (err) {
+			response.say("Fehler").send();
+		}
+		if (body.message) {
+			response.say(body.message).send();
+		}
+	});
+	return false;
+});
+
+// Intent: LDVPReceiverSetInputIntent
+
+app.intent(INTENT_RECEIVER_SET_INPUT_TO, _getIntentOpts(INTENT_RECEIVER_SET_INPUT_TO), function (request, response) {
+	const input = request.slot('INPUT');
+	_sendRequest('GET', '/receiver/setInputTo/' + input, {}, function (err, res, body) {
 		if (err) {
 			response.say("Fehler").send();
 		}
