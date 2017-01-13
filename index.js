@@ -20,7 +20,9 @@ const INTENT_RECEIVER_SET_VOLUME_TO = 'LDVPReceiverSetVolumeToIntent';
 const UTTERANCES = {
 	[INTENT_RECEIVER_TURN_OFF]: [],
 	[INTENT_RECEIVER_TURN_ON]: [],
-	[INTENT_RECEIVER_SET_VOLUME_TO]: ['setze lautstärke auf {-|VOLUME_LEVEL}']
+	[INTENT_RECEIVER_SET_VOLUME_TO]: [
+		'setze lautstärke auf {-|VOLUME_LEVEL}'
+	]
 };
 
 
@@ -35,8 +37,6 @@ const SLOTS = {
 function _getSlots(intent) { return SLOTS[intent] || {}; }
 function _getUtterance(intent) { return UTTERANCES[intent] || []; }
 function _getIntentOpts(intent) { return { 'slots': _getSlots(intent), 'utterances': _getUtterance(intent) }; }
-
-console.log(_getIntentOpts(INTENT_RECEIVER_SET_VOLUME_TO));
 
 // -------------
 // Init
@@ -135,9 +135,11 @@ function _sendRequest(method, path, payload, callback) {
 		headers: {
 			'Content-type': 'application/json'
 		},
+		/*
 		qs: {
 			'time': +new Date()
 		}
+		*/
 	};
 
 	if (USERNAME && PASSWORD) {
