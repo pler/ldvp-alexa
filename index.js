@@ -71,7 +71,7 @@ app.sessionEnded(function(req, res) {
 // Intent: LDVPReceiverTurnOffIntent
 
 app.intent(INTENT_RECEIVER_TURN_OFF, _getIntentOpts(INTENT_RECEIVER_TURN_OFF), function (request, response) {
-	_sendRequest('GET', '/', {}, _expect([200], function (err, _, body) {
+	_sendRequest('GET', '/receiver/poweroff', {}, _expect([200], function (err, _, body) {
 		if (err) {
 			console.error(err);
 			response.say("fehler").send();
@@ -80,6 +80,7 @@ app.intent(INTENT_RECEIVER_TURN_OFF, _getIntentOpts(INTENT_RECEIVER_TURN_OFF), f
 		console.log(body);
 		response.say("fertig").send();
 	}));
+	return false;
 });
 
 // -------------
