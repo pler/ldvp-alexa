@@ -69,26 +69,6 @@ if (!(HOST && USERNAME && PASSWORD)) {
 var app = new Alexa.app(APP_NAME);
 
 // -------------
-// Events
-// -------------
-
-// LaunchRequest
-
-/*
-app.launch(function(req, res) {
-
-});
-*/
-
-// SessionEndRequest
-
-/*
-app.sessionEnded(function(req, res) {
-
-});
-*/
-
-// -------------
 // Intents
 // -------------
 
@@ -138,7 +118,7 @@ app.intent(INTENT_RECEIVER_SET_VOLUME_TO, _getIntentOpts(INTENT_RECEIVER_SET_VOL
 // Intent: LDVPReceiverSetInputIntent
 
 app.intent(INTENT_RECEIVER_SET_INPUT_TO, _getIntentOpts(INTENT_RECEIVER_SET_INPUT_TO), function (request, response) {
-	const input = request.slot('INPUT');
+	const input = request.slot('INPUTS');
 	_sendRequest('GET', '/receiver/setInputTo/' + input, {}, function (err, res, body) {
 		if (err) {
 			response.say("Fehler").send();
