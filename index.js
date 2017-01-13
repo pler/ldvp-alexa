@@ -18,10 +18,17 @@ const INTENT_RECEIVER_TURN_ON = 'LDVPReceiverTurnOnIntent';
 const INTENT_RECEIVER_SET_VOLUME_TO = 'LDVPReceiverSetVolumeToIntent';
 
 const UTTERANCES = {
-	[INTENT_RECEIVER_TURN_OFF]: [],
-	[INTENT_RECEIVER_TURN_ON]: [],
+	[INTENT_RECEIVER_TURN_OFF]: [
+		'{auschalten|auszuschalten|auf aus}',
+		'schalte receiver {aus|ab}',
+	],
+	[INTENT_RECEIVER_TURN_ON]: [
+		'{einschalten|anschalten}',
+		'schalte receiver {an|ein}'
+	],
 	[INTENT_RECEIVER_SET_VOLUME_TO]: [
-		'{setze|stelle} lautstärke {auf|zu} {-|VOLUME_LEVEL}'
+		'{setze|stelle} lautstärke {auf|zu} {-|VOLUME_LEVEL}',
+		'lautstärke {-|VOLUME_LEVEL}'
 	]
 };
 
