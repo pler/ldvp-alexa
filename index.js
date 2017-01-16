@@ -17,6 +17,8 @@ const INTENT_RECEIVER_TURN_OFF = 'LDVPReceiverTurnOffIntent';
 const INTENT_RECEIVER_TURN_ON = 'LDVPReceiverTurnOnIntent';
 const INTENT_RECEIVER_SET_VOLUME_TO = 'LDVPReceiverSetVolumeToIntent';
 const INTENT_RECEIVER_SET_INPUT_TO = 'LDVPReceiverSetInputIntent';
+const INTENT_FIRE_TV_TRIGGER_ACTION = 'LDVPFireTvTriggerActionIntent';
+const INTENT_FIRE_TV_OPEN_APP = 'LDVPFireTvOpenAppIntent';
 
 const UTTERANCES = {
 	[INTENT_RECEIVER_TURN_OFF]: [
@@ -34,6 +36,12 @@ const UTTERANCES = {
 	[INTENT_RECEIVER_SET_INPUT_TO]: [
 		'{setze|stelle} {eingang|input} {auf|zu} {-|INPUTS}',
 		'{eingang|input} {-|INPUTS}'
+	],
+	[INTENT_FIRE_TV_TRIGGER_ACTION]: [
+		'fire aktion {-|FIRETV_ACTIONS}'
+	],
+	[INTENT_FIRE_TV_OPEN_APP]: [
+		'fire öffne app {-|FIRETV_APPS}'
 	]
 };
 
@@ -45,6 +53,12 @@ const SLOTS = {
 	},
 	[INTENT_RECEIVER_SET_INPUT_TO]: {
 		'INPUTS': 'INPUT'
+	},
+	[INTENT_FIRE_TV_TRIGGER_ACTION]: {
+		'INPUTS': 'FIRETV_ACTION'
+	},
+	[INTENT_FIRE_TV_OPEN_APP]: {
+		'INPUTS': 'FIRETV_APP'
 	}
 };
 
@@ -115,11 +129,26 @@ app.intent(INTENT_RECEIVER_SET_VOLUME_TO, _getIntentOpts(INTENT_RECEIVER_SET_VOL
 	return false;
 });
 
-// Intent: LDVPReceiverSetInputIntent
+// Intent: LDVPFireTvTriggerActionIntent
 
-app.intent(INTENT_RECEIVER_SET_INPUT_TO, _getIntentOpts(INTENT_RECEIVER_SET_INPUT_TO), function (request, response) {
-	const input = request.slot('INPUTS');
-	_sendRequest('GET', '/receiver/setInputTo/' + input, {}, function (err, res, body) {
+app.intent(INTENT_FIRE_TV_TRIGGER_ACTION, _getIntentOpts(INTENT_FIRE_TV_TRIGGER_ACTION), function (request, response) {
+	const action = request.slot('FIRETV_ACTIONS');
+	_sendRequest('GET', '/firetv/action/' + action, {}, function (err, res, body) {
+		if (err) {
+			response.say("Fehler").send();
+		}
+		if (body.message) {
+			response.say(body.message).send();
+		}
+	});
+	return false;
+});
+
+// Intent: LDVPFireTvOpenAppIntent
+
+app.intent(INTENT_FIRE_TV_OPEN_APP, _getIntentOpts(INTENT_FIRE_TV_OPEN_APP), function (request, response) {
+	const app = request.slot('FIRETV_APPS');
+	_sendRequest('GET', '/firetv/apps/' + app + '/start', {}, function (err, res, body) {
 		if (err) {
 			response.say("Fehler").send();
 		}
